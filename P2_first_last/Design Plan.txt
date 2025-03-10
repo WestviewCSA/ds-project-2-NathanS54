@@ -4,3 +4,12 @@ Due: 3/12/25 11:59pm
 After reading the specs, start populating
 a list of things you think you might have to
 do to finish this project
+
+1) Read the specs
+2) Understand map based input files
+	- symbol: . = walkable
+	- symbol: @ = non walkable
+	- symbol: W = End
+	- symbol: $ = Start
+	- symbol: | = opening
+
