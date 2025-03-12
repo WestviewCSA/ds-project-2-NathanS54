@@ -15,9 +15,23 @@ public class p2 {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-	
+			if(!Incoordinate) {
+				readtextMap("TEXT01");
+			}
+			if(IncoordinateMap) {
+				
+			}
 		
+
 	}
+	
+	public static void firstChecks(boolean s, boolean q, boolean o, boolean t, boolean i, boolean ou, boolean h ) {
+		if(s && !q && !o) {
+			stackSolver(s);
+			
+			}
+		}
+	
 	
 	public static void readMap(String filename) {
 		
@@ -38,6 +52,7 @@ public class p2 {
 					for(int i = 0; i < numCols && i < row.length(); i++) {
 						char el = row.charAt(i);
 						Tile obj = new Tile(rowIndex, i , el );
+						currMap.setTile(rowIndex, i, el);
 					}
 				}
 			}
@@ -46,6 +61,16 @@ public class p2 {
 		} catch (FileNotFoundException e) {
 			System.out.println(e);
 		}
+	}
+	
+	public static void stackSolver(String string) {
+	
+	}
+	public static void readCoordinateMap(String string) {
+		
+	}
+	public static void queueSolver() {
+		
 	}
 	
 }

@@ -3,6 +3,14 @@ public class Tile {
 	
 	private int row, col;
 	private char type;
+	private boolean visited;
+	
+	public boolean isVisited() {
+		return visited;
+	}
+	public void setVisited(boolean visited) {
+		this.visited = visited;
+	}
 	public int getRow() {
 		return row;
 	}
@@ -26,6 +34,7 @@ public class Tile {
 		this.row = row;
 		this.col = col;
 		this.type = type;
+		this.visited = false;
 	}
 
 	

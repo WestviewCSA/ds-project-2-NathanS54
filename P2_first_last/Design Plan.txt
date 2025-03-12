@@ -13,3 +13,4 @@ do to finish this project
 	- symbol: $ = Start
 	- symbol: | = opening
 
+3) put everything in the stack and queue by friday or weekend
