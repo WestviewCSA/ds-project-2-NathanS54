@@ -15,19 +15,14 @@ public class p2 {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-			if(!Incoordinate) {
-				readtextMap("TEXT01");
-			}
-			if(IncoordinateMap) {
-				
-			}
+			
 		
 
 	}
 	
 	public static void firstChecks(boolean s, boolean q, boolean o, boolean t, boolean i, boolean ou, boolean h ) {
 		if(s && !q && !o) {
-			stackSolver(s);
+			
 			
 			}
 		}
@@ -41,7 +36,8 @@ public class p2 {
 			
 			int numRows = scanner.nextInt();
 			int numCols = scanner.nextInt();
-			int bumRooms = scanner.nextInt();
+			int numRooms = scanner.nextInt();
+			
 			
 			int rowIndex = 0;
 			
@@ -51,8 +47,8 @@ public class p2 {
 				if(row.length() > 0) {
 					for(int i = 0; i < numCols && i < row.length(); i++) {
 						char el = row.charAt(i);
-						Tile obj = new Tile(rowIndex, i , el );
-						currMap.setTile(rowIndex, i, el);
+						
+						
 					}
 				}
 			}
@@ -66,8 +62,29 @@ public class p2 {
 	public static void stackSolver(String string) {
 	
 	}
-	public static void readCoordinateMap(String string) {
-		
+	public static void readCoordinateMap(String filename) {
+		try {
+				File file = new File(filename);
+				Scanner scanner = new Scanner(file);
+				
+				int numRows = scanner.nextInt();
+				int numCols = scanner.nextInt();
+				int numRooms = scanner.nextInt();
+				
+				while(scanner.hasNextLine()) {
+					String row = scanner.nextLine();
+					
+					if(row.length() > 0) {
+						char mapElement = row.charAt(0);
+						int rowIndex = row.charAt(1);
+						int colIndex = row.charAt(2);
+						int mazeLeve = row.charAt(3);
+					}
+				}
+				
+		} catch(FileNotFoundException e) {
+			System.out.println(e);
+		}
 	}
 	public static void queueSolver() {
 		

@@ -4,6 +4,7 @@ public class Tile {
 	private int row, col;
 	private char type;
 	private boolean visited;
+	private String output;
 	
 	public boolean isVisited() {
 		return visited;
@@ -29,13 +30,15 @@ public class Tile {
 	public void setType(char type) {
 		this.type = type;
 	}
-	public Tile(int row, int col, char type) {
+	public Tile(int row, int col, char type, boolean visited, String output) {
 		super();
 		this.row = row;
 		this.col = col;
 		this.type = type;
 		this.visited = false;
+		this.output = output;
 	}
+	
 
 	
 }
