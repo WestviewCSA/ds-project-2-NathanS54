@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class p2 {
 
@@ -11,12 +12,13 @@ public class p2 {
 	static boolean Incoordinate = false;
 	static boolean Outcoordinate = false;
 	static boolean Help = false;
-
+	static Map map;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 			
-		
+		readMap("TEST01");
+		System.out.println(map.returnMaze());
 
 	}
 	
@@ -37,7 +39,7 @@ public class p2 {
 			int numRows = scanner.nextInt();
 			int numCols = scanner.nextInt();
 			int numRooms = scanner.nextInt();
-			
+			map = new Map(numRows, numCols, numRooms);
 			
 			int rowIndex = 0;
 			
