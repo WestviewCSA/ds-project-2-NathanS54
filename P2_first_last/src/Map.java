@@ -34,4 +34,36 @@ public class Map {
 	        return result;
 	    }
 
+		public char[][][] getMazes() {
+			return mazes;
+		}
+
+		public void setMazes(char[][][] mazes) {
+			this.mazes = mazes;
+		}
+
+		public int getNumRows() {
+			return numRows;
+		}
+
+		public void setNumRows(int numRows) {
+			this.numRows = numRows;
+		}
+
+		public int getNumCols() {
+			return numCols;
+		}
+
+		public void setNumCols(int numCols) {
+			this.numCols = numCols;
+		}
+
+		public int getNumLevels() {
+			return numLevels;
+		}
+
+		public void setNumLevels(int numLevels) {
+			this.numLevels = numLevels;
+		}
+
 }

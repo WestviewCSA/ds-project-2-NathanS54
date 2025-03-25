@@ -22,12 +22,7 @@ public class p2 {
 
 	}
 	
-	public static void firstChecks(boolean s, boolean q, boolean o, boolean t, boolean i, boolean ou, boolean h ) {
-		if(s && !q && !o) {
-			
-			
-			}
-		}
+
 	
 	
 	public static void readMap(String filename) {
