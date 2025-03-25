@@ -1,63 +1,37 @@
-
 public class Map {
-	
-	private Tile[][][] map;
-	private int row, col,rooms;
+	    private char[][][] mazes; // 3D maze representation: level, row, col
+	    private int numRows, numCols, numLevels;
 
-	public Map(Tile[][][] map, int row, int col, int rooms) {
-		super();
-		map = new Tile[row][col][rooms];
-		this.row = row;
-		this.col = col;
-		this.rooms = rooms;
-	
-	}
-	public Map(int numRows, int numCols, int numRooms) {
-		// TODO Auto-generated constructor stub
-	}
-	public void setTile(int row, int col, int rooms, Tile obj) {
-		map[row][col][rooms] = obj;
-	}
-	
-	public String returnMaze() {
-		String maze = "";
-		for(int i = 0; i < map.length; i++) {
-			for(int j = 0; j < map[i].length; i++) {
-				
-				
-			}
-		}
-	}
+	    public Map(int numRows, int numCols, int numLevels) {
+	        this.numRows = numRows;
+	        this.numCols = numCols;
+	        this.numLevels = numLevels;
+	        mazes = new char[numLevels][numRows][numCols];
+	    }
 
-	public Tile[][][] getMap() {
-		return map;
-	}
+	    public void setTile(int level, int row, int col, char tile) {
+	        mazes[level][row][col] = tile;
+	    }
 
-	public void setMap(Tile[][][] map) {
-		this.map = map;
-	}
+	    public char getTile(int level, int row, int col) {
+	        return mazes[level][row][col];
+	    }
 
-	public int getRow() {
-		return row;
-	}
+	    public String returnMaze() {
+	        String result = "";
 
-	public void setRow(int row) {
-		this.row = row;
-	}
+	        for (int level = 0; level < numLevels; level++) {
+	            result += "Maze Level " + level + ":\n";
+	            for (int row = 0; row < numRows; row++) {
+	                for (int col = 0; col < numCols; col++) {
+	                    result += mazes[level][row][col];
+	                }
+	                result += "\n";
+	            }
+	            result += "\n";
+	        }
 
-	public int getCol() {
-		return col;
-	}
+	        return result;
+	    }
 
-	public void setCol(int col) {
-		this.col = col;
-	}
-
-	public int getRooms() {
-		return rooms;
-	}
-
-	public void setRooms(int rooms) {
-		this.rooms = rooms;
-	}
 }

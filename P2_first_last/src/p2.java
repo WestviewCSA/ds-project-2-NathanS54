@@ -61,35 +61,89 @@ public class p2 {
 		}
 	}
 	
-	public static void stackSolver(String string) {
-	
-	}
 	public static void readCoordinateMap(String filename) {
 		try {
-				File file = new File(filename);
-				Scanner scanner = new Scanner(file);
-				
-				int numRows = scanner.nextInt();
-				int numCols = scanner.nextInt();
-				int numRooms = scanner.nextInt();
-				
-				while(scanner.hasNextLine()) {
-					String row = scanner.nextLine();
-					
-					if(row.length() > 0) {
-						char mapElement = row.charAt(0);
-						int rowIndex = row.charAt(1);
-						int colIndex = row.charAt(2);
-						int mazeLeve = row.charAt(3);
-					}
+			File file = new File(filename);
+			Scanner scanner = new Scanner(file);
+
+			int numRows = scanner.nextInt();
+			int numCols = scanner.nextInt();
+			int numLevels = scanner.nextInt();
+			scanner.nextLine();
+
+			map = new Map(numRows, numCols, numLevels);
+
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine().trim();
+				if (line.isEmpty()) continue;
+
+				String[] parts = line.split(" ");
+				if (parts.length == 4) {
+					char tile = parts[0].charAt(0);
+					int row = Integer.parseInt(parts[1]);
+					int col = Integer.parseInt(parts[2]);
+					int level = Integer.parseInt(parts[3]);
+
+					map.setTile(level, row, col, tile);
 				}
-				
-		} catch(FileNotFoundException e) {
-			System.out.println(e);
+			}
+			scanner.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found.");
 		}
 	}
-	public static void queueSolver() {
-		
+	public static void stackSolver(String filename) {
+		readMap(filename);
+
+		Stack<int[]> stack = new Stack<>();
+		boolean[][][] visited = new boolean[map.getLevels()][map.getNumRows()][map.getNumCols()];
+
+		// Find start
+		for (int l = 0; l < map.getLevels(); l++) {
+			for (int r = 0; r < map.getNumRows(); r++) {
+				for (int c = 0; c < map.getNumCols(); c++) {
+					if (map.getTile(l, r, c) == 'S') {
+						stack.push(new int[]{l, r, c});
+						visited[l][r][c] = true;
+						break;
+					}
+				}
+			}
+		}
+
+		// DFS logic
+		int[][] directions = {
+			{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1},
+			{-1, 0, 0}, {1, 0, 0}
+		};
+
+		while (!stack.isEmpty()) {
+			int[] pos = stack.pop();
+			int l = pos[0], r = pos[1], c = pos[2];
+
+			if (map.getTile(l, r, c) == 'E') {
+				System.out.println("Found the end at L:" + l + " R:" + r + " C:" + c);
+				return;
+			}
+
+			for (int[] d : directions) {
+				int nl = l + d[0];
+				int nr = r + d[1];
+				int nc = c + d[2];
+
+				if (nl >= 0 && nl < map.getLevels() &&
+					nr >= 0 && nr < map.getNumRows() &&
+					nc >= 0 && nc < map.getNumCols() &&
+					!visited[nl][nr][nc] &&
+					map.getTile(nl, nr, nc) != '#') {
+
+					stack.push(new int[]{nl, nr, nc});
+					visited[nl][nr][nc] = true;
+				}
+			}
+		}
+
+		System.out.println("No path to the end found.");
 	}
 	
 }
