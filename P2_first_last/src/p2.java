@@ -1,144 +1,183 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.IOException;
 import java.util.Stack;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.Scanner;
 
 public class p2 {
 
-	static boolean Stack = false;
-	static boolean Queue = false;
-	static boolean Opt = false;
-	static boolean Time = false;
-	static boolean Incoordinate = false;
-	static boolean Outcoordinate = false;
-	static boolean Help = false;
-	static Map map;
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-			
-		readMap("TEST01");
-		System.out.println(map.returnMaze());
+    static boolean useStack = false;
+    static boolean useQueue = false;
+    static boolean Opt = false;
+    static boolean Time = false;
+    static boolean Incoordinate = false;
+    static boolean Outcoordinate = false;
+    static boolean Help = false;
+    static Map map;
 
-	}
-	
+    public static void main(String[] args) {
+        // Parse command line arguments
+        try {
+            parseCommandLineArguments(args);
+        } catch (IllegalCommandLineInputsException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
 
-	
-	
-	public static void readMap(String filename) {
-		
-		try {
-			File file = new File(filename);
-			Scanner scanner = new Scanner(file);
-			
-			int numRows = scanner.nextInt();
-			int numCols = scanner.nextInt();
-			int numRooms = scanner.nextInt();
-			map = new Map(numRows, numCols, numRooms);
-			
-			int rowIndex = 0;
-			
-			while(scanner.hasNextLine()) {
-				String row = scanner.nextLine();
-				
-				if(row.length() > 0) {
-					for(int i = 0; i < numCols && i < row.length(); i++) {
-						char el = row.charAt(i);
-						
-						
-					}
-				}
-			}
-			
-			
-		} catch (FileNotFoundException e) {
-			System.out.println(e);
-		}
-	}
-	
-	public static void readCoordinateMap(String filename) {
-		try {
-			File file = new File(filename);
-			Scanner scanner = new Scanner(file);
+        // Example usage:
+        if (useStack) {
+            stackSolver("TEST01");
+        } else if (useQueue) {
+            queueSolver("TEST01");
+        }
+    }
 
-			int numRows = scanner.nextInt();
-			int numCols = scanner.nextInt();
-			int numLevels = scanner.nextInt();
-			scanner.nextLine();
+    public static void parseCommandLineArguments(String[] args) throws IllegalCommandLineInputsException {
+        if (args.length == 0) {
+            throw new IllegalCommandLineInputsException("Missing command-line arguments.");
+        }
 
-			map = new Map(numRows, numCols, numLevels);
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-stack")) {
+                useStack = true;
+            } else if (args[i].equals("-queue")) {
+                useQueue = true;
+            } else if (args[i].equals("-opt")) {
+                Opt = true;
+            } else if (args[i].equals("-time")) {
+                Time = true;
+            } else if (args[i].equals("-incoordinate")) {
+                Incoordinate = true;
+            } else if (args[i].equals("-outcoordinate")) {
+                Outcoordinate = true;
+            } else if (args[i].equals("-help")) {
+                Help = true;
+            } else {
+                throw new IllegalCommandLineInputsException("Unknown argument: " + args[i]);
+            }
+        }
+    }
 
-			while (scanner.hasNextLine()) {
-				String line = scanner.nextLine().trim();
-				if (line.isEmpty()) continue;
+    public static void readMap(String filename) {
+        try {
+            File file = new File(filename);
+            Scanner scanner = new Scanner(file);
 
-				String[] parts = line.split(" ");
-				if (parts.length == 4) {
-					char tile = parts[0].charAt(0);
-					int row = Integer.parseInt(parts[1]);
-					int col = Integer.parseInt(parts[2]);
-					int level = Integer.parseInt(parts[3]);
+            int numRows = scanner.nextInt();
+            int numCols = scanner.nextInt();
+            int numRooms = scanner.nextInt();
+            map = new Map(numRows, numCols, numRooms);
 
-					map.setTile(level, row, col, tile);
-				}
-			}
-			scanner.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("File not found.");
-		}
-	}
-	public static void stackSolver(String filename) {
-		readMap(filename);
+            scanner.nextLine();  // Move to next line
 
-		Stack<int[]> stack = new Stack<>();
-		boolean[][][] visited = new boolean[map.getLevels()][map.getNumRows()][map.getNumCols()];
+            for (int row = 0; row < numRows; row++) {
+                String line = scanner.nextLine();
+                for (int col = 0; col < numCols; col++) {
+                    map.setTile(0, row, col, line.charAt(col));  // Using level 0 here
+                }
+            }
 
-		// Find start
-		for (int l = 0; l < map.getLevels(); l++) {
-			for (int r = 0; r < map.getNumRows(); r++) {
-				for (int c = 0; c < map.getNumCols(); c++) {
-					if (map.getTile(l, r, c) == 'S') {
-						stack.push(new int[]{l, r, c});
-						visited[l][r][c] = true;
-						break;
-					}
-				}
-			}
-		}
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        }
+    }
 
-		// DFS logic
-		int[][] directions = {
-			{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1},
-			{-1, 0, 0}, {1, 0, 0}
-		};
+    public static void stackSolver(String filename) {
+        readMap(filename);
 
-		while (!stack.isEmpty()) {
-			int[] pos = stack.pop();
-			int l = pos[0], r = pos[1], c = pos[2];
+        Stack<int[]> stack = new Stack<>();
+        boolean[][] visited = new boolean[map.getNumRows()][map.getNumCols()];
 
-			if (map.getTile(l, r, c) == 'E') {
-				System.out.println("Found the end at L:" + l + " R:" + r + " C:" + c);
-				return;
-			}
+        // Find Wolverine's start position
+        int[] start = findStart();
+        stack.push(start);
+        visited[start[0]][start[1]] = true;
 
-			for (int[] d : directions) {
-				int nl = l + d[0];
-				int nr = r + d[1];
-				int nc = c + d[2];
+        // DFS logic
+        while (!stack.isEmpty()) {
+            int[] pos = stack.pop();
+            int r = pos[0], c = pos[1];
 
-				if (nl >= 0 && nl < map.getLevels() &&
-					nr >= 0 && nr < map.getNumRows() &&
-					nc >= 0 && nc < map.getNumCols() &&
-					!visited[nl][nr][nc] &&
-					map.getTile(nl, nr, nc) != '#') {
+            if (map.getTile(0, r, c) == '$') {
+                System.out.println("Found the Diamond Wolverine Buck!");
+                return;
+            }
 
-					stack.push(new int[]{nl, nr, nc});
-					visited[nl][nr][nc] = true;
-				}
-			}
-		}
+            for (int[] dir : directions()) {
+                int nr = r + dir[0];
+                int nc = c + dir[1];
+                if (isValidMove(nr, nc, visited)) {
+                    stack.push(new int[]{nr, nc});
+                    visited[nr][nc] = true;
+                }
+            }
+        }
 
-		System.out.println("No path to the end found.");
-	}
-	
+        System.out.println("No path to the Diamond Wolverine Buck.");
+    }
+
+    public static void queueSolver(String filename) {
+        readMap(filename);
+
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][] visited = new boolean[map.getNumRows()][map.getNumCols()];
+
+        // Find Wolverine's start position
+        int[] start = findStart();
+        queue.offer(start);
+        visited[start[0]][start[1]] = true;
+
+        // BFS logic
+        while (!queue.isEmpty()) {
+            int[] pos = queue.poll();
+            int r = pos[0], c = pos[1];
+
+            if (map.getTile(0, r, c) == '$') {
+                System.out.println("Found the Diamond Wolverine Buck!");
+                return;
+            }
+
+            for (int[] dir : directions()) {
+                int nr = r + dir[0];
+                int nc = c + dir[1];
+                if (isValidMove(nr, nc, visited)) {
+                    queue.offer(new int[]{nr, nc});
+                    visited[nr][nc] = true;
+                }
+            }
+        }
+
+        System.out.println("No path to the Diamond Wolverine Buck.");
+    }
+
+    // Utility methods
+    public static int[] findStart() {
+        for (int r = 0; r < map.getNumRows(); r++) {
+            for (int c = 0; c < map.getNumCols(); c++) {
+                if (map.getTile(0, r, c) == 'W') {
+                    return new int[]{r, c};
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isValidMove(int r, int c, boolean[][] visited) {
+        return r >= 0 && r < map.getNumRows() &&
+                c >= 0 && c < map.getNumCols() &&
+                map.getTile(0, r, c) != '@' &&
+                !visited[r][c];
+    }
+
+    public static int[][] directions() {
+        return new int[][]{
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1}  // N, S, W, E
+        };
+    }
 }
+
+
+
